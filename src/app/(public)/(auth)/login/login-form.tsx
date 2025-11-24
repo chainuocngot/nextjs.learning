@@ -13,8 +13,12 @@ import { useForm } from "react-hook-form"
 import { Form, FormField, FormItem, FormMessage } from "@/components/ui/form"
 import { LoginBody, LoginBodyType } from "@/schemaValidations/auth.schema"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { useLoginMutation } from "@/queries/useAuth"
+import { toast } from "sonner"
+import { handleErrorApi } from "@/lib/utils"
 
 export default function LoginForm() {
+  const loginMutation = useLoginMutation()
   const form = useForm<LoginBodyType>({
     resolver: zodResolver(LoginBody),
     defaultValues: {
@@ -22,6 +26,20 @@ export default function LoginForm() {
       password: "",
     },
   })
+
+  const onSubmit = async (data: LoginBodyType) => {
+    if (loginMutation.isPending) return
+
+    try {
+      const result = await loginMutation.mutateAsync(data)
+      toast.success(result.payload.message)
+    } catch (error) {
+      handleErrorApi({
+        error,
+        setError: form.setError,
+      })
+    }
+  }
 
   return (
     <Card className="mx-auto w-full max-w-[424px]">
@@ -33,7 +51,11 @@ export default function LoginForm() {
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form className="space-y-2 max-w-[600px] shrink-0 w-full" noValidate>
+          <form
+            className="space-y-2 max-w-[600px] shrink-0 w-full"
+            noValidate
+            onSubmit={form.handleSubmit(onSubmit, console.warn)}
+          >
             <div className="grid gap-4">
               <FormField
                 control={form.control}
@@ -74,7 +96,11 @@ export default function LoginForm() {
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="w-full">
+              <Button
+                type="submit"
+                className="w-full"
+                disabled={loginMutation.isPending}
+              >
                 Đăng nhập
               </Button>
               <Button variant="outline" className="w-full" type="button">
