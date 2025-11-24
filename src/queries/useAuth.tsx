@@ -6,3 +6,9 @@ export const useLoginMutation = () => {
     mutationFn: authApiRequests.cLogin,
   })
 }
+
+export const useLogoutMutation = () => {
+  return useMutation({
+    mutationFn: authApiRequests.cLogout,
+  })
+}
