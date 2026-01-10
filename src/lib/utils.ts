@@ -41,8 +41,18 @@ const isBrowser = typeof window !== "undefined"
 const getFromLocalStorage = (key: string) =>
   isBrowser ? localStorage.getItem(key) : null
 
+const setToLocalStorage = (key: string, value: string) => {
+  if (isBrowser) localStorage.setItem(key, value)
+}
+
 export const getAccessTokenFromLocalStorage = () =>
   getFromLocalStorage("accessToken")
 
 export const getRefreshTokenFromLocalStorage = () =>
   getFromLocalStorage("refreshToken")
+
+export const setAccessTokenToLocalStorage = (value: string) =>
+  setToLocalStorage("accessToken", value)
+
+export const setRefreshTokenToLocalStorage = (value: string) =>
+  setToLocalStorage("refreshToken", value)
