@@ -1,6 +1,9 @@
 "use client"
 
-import { getRefreshTokenFromLocalStorage } from "@/lib/utils"
+import {
+  getAccessTokenFromLocalStorage,
+  getRefreshTokenFromLocalStorage,
+} from "@/lib/utils"
 import { useLogoutMutation } from "@/queries/useAuth"
 import { UseMutateAsyncFunction } from "@tanstack/react-query"
 import { useRouter, useSearchParams } from "next/navigation"
@@ -13,11 +16,15 @@ export default function LogoutPage() {
   const { mutateAsync } = useLogoutMutation()
 
   const refreshTokenFromUrl = searchParams.get("refreshToken")
+  const accessTokenFromUrl = searchParams.get("accessToken")
 
   useEffect(() => {
     if (
       ref.current ||
-      refreshTokenFromUrl !== getRefreshTokenFromLocalStorage()
+      (refreshTokenFromUrl &&
+        refreshTokenFromUrl !== getRefreshTokenFromLocalStorage()) ||
+      (accessTokenFromUrl &&
+        accessTokenFromUrl !== getAccessTokenFromLocalStorage())
     ) {
       return
     }
@@ -31,7 +38,7 @@ export default function LogoutPage() {
 
       router.push("/login")
     })
-  }, [mutateAsync, refreshTokenFromUrl, router])
+  }, [accessTokenFromUrl, mutateAsync, refreshTokenFromUrl, router])
 
   return null
 }

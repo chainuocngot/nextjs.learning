@@ -125,7 +125,6 @@ const request = async <Response>(
 
           try {
             await clientLogoutRequest
-          } catch {
           } finally {
             localStorage.removeItem("accessToken")
             localStorage.removeItem("refreshToken")
