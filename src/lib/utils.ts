@@ -85,7 +85,7 @@ export const checkAndRefreshToken = async (params?: {
     iat: number
   }
 
-  const now = Math.round(new Date().getTime() / 1000)
+  const now = new Date().getTime() / 1000 - 1
 
   if (decodedRefreshToken.exp <= now) {
     removeAccessTokenFromLocalStorage()
