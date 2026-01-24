@@ -68,6 +68,11 @@ export const removeAccessTokenFromLocalStorage = () =>
 export const removeRefreshTokenFromLocalStorage = () =>
   removeFromLocalStorage("refreshToken")
 
+export const removeTokensFromLocalStorage = () => {
+  removeAccessTokenFromLocalStorage()
+  removeRefreshTokenFromLocalStorage()
+}
+
 export const checkAndRefreshToken = async (params?: {
   onError?: () => void
   onSuccess?: () => void

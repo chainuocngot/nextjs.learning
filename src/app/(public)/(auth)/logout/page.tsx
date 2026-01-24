@@ -19,7 +19,7 @@ export default function LogoutPage() {
   const accessTokenFromUrl = searchParams.get("accessToken")
 
   useEffect(() => {
-    if (
+    const isAlreadyMutateOrTokensNotMatch =
       ref.current ||
       !refreshTokenFromUrl ||
       !accessTokenFromUrl ||
@@ -27,19 +27,20 @@ export default function LogoutPage() {
         refreshTokenFromUrl !== getRefreshTokenFromLocalStorage()) ||
       (accessTokenFromUrl &&
         accessTokenFromUrl !== getAccessTokenFromLocalStorage())
-    ) {
-      return
+
+    if (isAlreadyMutateOrTokensNotMatch) {
+      router.push("/")
+    } else {
+      ref.current = mutateAsync
+
+      mutateAsync().then(() => {
+        setTimeout(() => {
+          ref.current = null
+        }, 1000)
+
+        router.push("/login")
+      })
     }
-
-    ref.current = mutateAsync
-
-    mutateAsync().then(() => {
-      setTimeout(() => {
-        ref.current = null
-      }, 1000)
-
-      router.push("/login")
-    })
   }, [accessTokenFromUrl, mutateAsync, refreshTokenFromUrl, router])
 
   return null
