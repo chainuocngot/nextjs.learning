@@ -18,14 +18,22 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod"
 import { PlusCircle, Upload } from "lucide-react"
 import { useMemo, useRef, useState } from "react"
-import { useForm } from "react-hook-form"
+import { useForm, useWatch } from "react-hook-form"
 import { Form, FormField, FormItem, FormMessage } from "@/components/ui/form"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { useAddAccountMutation } from "@/queries/useAccount"
+import { useUploadMediaMutation } from "@/queries/useMedia"
+import { toast } from "sonner"
+import { handleErrorApi } from "@/lib/utils"
 
 export default function AddEmployee() {
   const [file, setFile] = useState<File | null>(null)
   const [open, setOpen] = useState(false)
+  const addAccountMutation = useAddAccountMutation()
+  const uploadMediaMutation = useUploadMediaMutation()
+
   const avatarInputRef = useRef<HTMLInputElement | null>(null)
+
   const form = useForm<CreateEmployeeAccountBodyType>({
     resolver: zodResolver(CreateEmployeeAccountBody),
     defaultValues: {
@@ -36,14 +44,57 @@ export default function AddEmployee() {
       confirmPassword: "",
     },
   })
-  const avatar = form.watch("avatar")
-  const name = form.watch("name")
+
+  const avatar = useWatch({
+    control: form.control,
+    name: "avatar",
+  })
+  const name = useWatch({
+    control: form.control,
+    name: "name",
+  })
+
   const previewAvatarFromFile = useMemo(() => {
     if (file) {
       return URL.createObjectURL(file)
     }
     return avatar
   }, [file, avatar])
+
+  const reset = () => {
+    form.reset()
+    setFile(null)
+  }
+
+  const onSubmit = async (values: CreateEmployeeAccountBodyType) => {
+    if (addAccountMutation.isPending) return
+
+    try {
+      let body = values
+
+      if (file) {
+        const formData = new FormData()
+        formData.append("file", file)
+
+        const updateImageResult =
+          await uploadMediaMutation.mutateAsync(formData)
+        const imageUrl = updateImageResult.payload.data
+        body = {
+          ...values,
+          avatar: imageUrl,
+        }
+      }
+      const result = await addAccountMutation.mutateAsync(body)
+      toast.success(result.payload.message)
+      reset()
+      setOpen(false)
+    } catch (error) {
+      handleErrorApi({
+        error,
+        setError: form.setError,
+      })
+    }
+  }
 
   return (
     <Dialog onOpenChange={setOpen} open={open}>
@@ -67,6 +118,8 @@ export default function AddEmployee() {
             noValidate
             className="grid auto-rows-max items-start gap-4 md:gap-8"
             id="add-employee-form"
+            onSubmit={form.handleSubmit(onSubmit, console.log)}
+            onReset={reset}
           >
             <div className="grid gap-4 py-4">
               <FormField

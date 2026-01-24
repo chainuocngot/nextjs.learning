@@ -1,6 +1,5 @@
 import accountApiRequests from "@/api-requests/account"
 import { cookies } from "next/headers"
-import React from "react"
 
 export default async function Dashboard() {
   const cookieStore = await cookies()
@@ -13,7 +12,7 @@ export default async function Dashboard() {
     name = result.payload.data.name
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    if (error.digest.startsWith("NEXT_REDIRECT")) {
+    if (error.digest?.startsWith("NEXT_REDIRECT")) {
       throw error
     }
   }
