@@ -1,6 +1,6 @@
 import accountApiRequests from "@/api-requests/account"
 import { UpdateEmployeeAccountBodyType } from "@/schemaValidations/account.schema"
-import { QueryClient, useMutation, useQuery } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
 export const useAccountMe = () => {
   return useQuery({
@@ -28,15 +28,22 @@ export const useGetAccountList = () => {
   })
 }
 
-export const useGetAccount = ({ id }: { id: number }) => {
+export const useGetAccount = ({
+  id,
+  enabled,
+}: {
+  id: number
+  enabled: boolean
+}) => {
   return useQuery({
     queryKey: ["accounts", id],
     queryFn: () => accountApiRequests.getEmployee(id),
+    enabled,
   })
 }
 
 export const useAddAccountMutation = () => {
-  const queryClient = new QueryClient()
+  const queryClient = useQueryClient()
 
   return useMutation({
     mutationFn: accountApiRequests.addEmployee,
@@ -49,7 +56,7 @@ export const useAddAccountMutation = () => {
 }
 
 export const useUpdateAccountMutation = () => {
-  const queryClient = new QueryClient()
+  const queryClient = useQueryClient()
 
   return useMutation({
     mutationFn: ({
@@ -67,7 +74,7 @@ export const useUpdateAccountMutation = () => {
 }
 
 export const useDeleteAccountMutation = () => {
-  const queryClient = new QueryClient()
+  const queryClient = useQueryClient()
 
   return useMutation({
     mutationFn: accountApiRequests.deleteEmployee,

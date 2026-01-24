@@ -80,7 +80,7 @@ export const columns: ColumnDef<AccountType>[] = [
     cell: ({ row }) => (
       <div>
         <Avatar className="aspect-square w-[100px] h-[100px] rounded-md object-cover">
-          <AvatarImage src={row.getValue("avatar")} />
+          <AvatarImage src={row.getValue("avatar")} className="object-cover" />
           <AvatarFallback className="rounded-none">
             {row.original.name}
           </AvatarFallback>
@@ -237,11 +237,7 @@ export default function AccountTable() {
       }}
     >
       <div className="w-full">
-        <EditEmployee
-          id={employeeIdEdit}
-          setId={setEmployeeIdEdit}
-          onSubmitSuccess={() => {}}
-        />
+        <EditEmployee id={employeeIdEdit} setId={setEmployeeIdEdit} />
         <AlertDialogDeleteAccount
           employeeDelete={employeeDelete}
           setEmployeeDelete={setEmployeeDelete}
