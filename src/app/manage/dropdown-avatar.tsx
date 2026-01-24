@@ -16,11 +16,13 @@ import { handleErrorApi } from "@/lib/utils"
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
 import { useAccountMe } from "@/queries/useAccount"
+import { useAppContext } from "@/components/app-provider"
 
 export default function DropdownAvatar() {
   const router = useRouter()
   const logoutMutation = useLogoutMutation()
   const { data } = useAccountMe()
+  const { setIsAuth } = useAppContext()
 
   const account = data?.payload.data
 
@@ -31,6 +33,7 @@ export default function DropdownAvatar() {
       const result = await logoutMutation.mutateAsync()
 
       toast.success(result.payload.message)
+      setIsAuth(false)
       router.push("/login")
     } catch (error) {
       handleErrorApi({
