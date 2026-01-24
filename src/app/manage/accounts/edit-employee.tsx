@@ -86,6 +86,11 @@ export default function EditEmployee({
     return avatar
   }, [file, avatar])
 
+  const resetState = () => {
+    setId(undefined)
+    setFile(null)
+  }
+
   const onSubmit = async (values: UpdateEmployeeAccountBodyType) => {
     if (updateAccountMutation.isPending || !id) return
 
@@ -109,7 +114,7 @@ export default function EditEmployee({
       }
       const result = await updateAccountMutation.mutateAsync(body)
       toast.success(result.payload.message)
-      setId(undefined)
+      resetState()
       onSubmitSuccess?.()
     } catch (error) {
       handleErrorApi({
@@ -124,7 +129,7 @@ export default function EditEmployee({
       open={Boolean(id)}
       onOpenChange={(value) => {
         if (!value) {
-          setId(undefined)
+          resetState()
         }
       }}
     >
