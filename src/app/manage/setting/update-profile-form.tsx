@@ -29,7 +29,7 @@ export default function UpdateProfileForm() {
     resolver: zodResolver(UpdateMeBody),
     defaultValues: {
       name: "",
-      avatar: "",
+      avatar: undefined,
     },
   })
 
@@ -49,7 +49,7 @@ export default function UpdateProfileForm() {
 
     form.reset({
       name,
-      avatar: avatar ?? "",
+      avatar: avatar ?? undefined,
     })
   }, [data, form])
 
@@ -70,9 +70,8 @@ export default function UpdateProfileForm() {
         const formData = new FormData()
         formData.append("file", file)
 
-        const updateImageResult = await uploadMediaMutation.mutateAsync(
-          formData,
-        )
+        const updateImageResult =
+          await uploadMediaMutation.mutateAsync(formData)
         const imageUrl = updateImageResult.payload.data
         body = {
           ...values,

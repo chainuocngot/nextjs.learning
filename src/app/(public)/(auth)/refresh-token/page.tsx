@@ -5,9 +5,9 @@ import {
   getRefreshTokenFromLocalStorage,
 } from "@/lib/utils"
 import { useRouter, useSearchParams } from "next/navigation"
-import { useEffect } from "react"
+import { Suspense, useEffect } from "react"
 
-export default function RefreshTokenPage() {
+function RefreshToken() {
   const router = useRouter()
   const searchParams = useSearchParams()
 
@@ -30,4 +30,12 @@ export default function RefreshTokenPage() {
   }, [redirectPathname, refreshTokenFromUrl, router])
 
   return null
+}
+
+export default function RefreshTokenPage() {
+  return (
+    <Suspense>
+      <RefreshToken />
+    </Suspense>
+  )
 }
