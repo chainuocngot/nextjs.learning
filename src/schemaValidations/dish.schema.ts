@@ -1,12 +1,12 @@
-import { DishStatusValues } from '@/constants/type'
-import z from 'zod'
+import { DishStatusValues } from "@/constants/type"
+import z from "zod"
 
 export const CreateDishBody = z.object({
   name: z.string().min(1).max(256),
-  price: z.coerce.number().positive(),
+  price: z.coerce.number<number>().positive(),
   description: z.string().max(10000),
-  image: z.string().url(),
-  status: z.enum(DishStatusValues).optional()
+  image: z.url(),
+  status: z.enum(DishStatusValues).optional(),
 })
 
 export type CreateDishBodyType = z.TypeOf<typeof CreateDishBody>
@@ -19,19 +19,19 @@ export const DishSchema = z.object({
   image: z.string(),
   status: z.enum(DishStatusValues),
   createdAt: z.date(),
-  updatedAt: z.date()
+  updatedAt: z.date(),
 })
 
 export const DishRes = z.object({
   data: DishSchema,
-  message: z.string()
+  message: z.string(),
 })
 
 export type DishResType = z.TypeOf<typeof DishRes>
 
 export const DishListRes = z.object({
   data: z.array(DishSchema),
-  message: z.string()
+  message: z.string(),
 })
 
 export type DishListResType = z.TypeOf<typeof DishListRes>
@@ -39,16 +39,18 @@ export type DishListResType = z.TypeOf<typeof DishListRes>
 export const UpdateDishBody = CreateDishBody
 export type UpdateDishBodyType = CreateDishBodyType
 export const DishParams = z.object({
-  id: z.coerce.number()
+  id: z.coerce.number(),
 })
 export type DishParamsType = z.TypeOf<typeof DishParams>
 
 export const DishListWithPaginationQuery = z.object({
   page: z.coerce.number().positive().lte(10000).default(1),
-  limit: z.coerce.number().positive().lte(10000).default(10)
+  limit: z.coerce.number().positive().lte(10000).default(10),
 })
 
-export type DishListWithPaginationQueryType = z.TypeOf<typeof DishListWithPaginationQuery>
+export type DishListWithPaginationQueryType = z.TypeOf<
+  typeof DishListWithPaginationQuery
+>
 
 export const DishListWithPaginationRes = z.object({
   data: z.object({
@@ -56,9 +58,11 @@ export const DishListWithPaginationRes = z.object({
     totalPage: z.number(),
     page: z.number(),
     limit: z.number(),
-    items: z.array(DishSchema)
+    items: z.array(DishSchema),
   }),
-  message: z.string()
+  message: z.string(),
 })
 
-export type DishListWithPaginationResType = z.TypeOf<typeof DishListWithPaginationRes>
+export type DishListWithPaginationResType = z.TypeOf<
+  typeof DishListWithPaginationRes
+>
