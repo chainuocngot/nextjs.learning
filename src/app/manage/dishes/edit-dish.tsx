@@ -75,7 +75,6 @@ export default function EditDish({
   useEffect(() => {
     if (data) {
       const { name, description, price, image, status } = data.payload.data
-      console.log(">> Check | data.payload.data:", data.payload.data)
 
       reset({
         name,
