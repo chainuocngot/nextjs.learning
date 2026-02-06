@@ -56,6 +56,7 @@ export default function AddDish() {
 
   const image = useWatch({ control, name: "image" })
   const name = useWatch({ control, name: "name" })
+
   const previewAvatarFromFile = useMemo(() => {
     if (file) {
       return URL.createObjectURL(file)

@@ -5,6 +5,7 @@ import { usePathname, useRouter } from "next/navigation"
 import { useEffect } from "react"
 
 const UNAUTHENTICATED_PATH = ["/login", "/logout", "/refresh-token"]
+
 export default function RefreshToken() {
   const pathname = usePathname()
   const router = useRouter()
@@ -12,8 +13,7 @@ export default function RefreshToken() {
   useEffect(() => {
     if (UNAUTHENTICATED_PATH.includes(pathname)) return
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let interval: any = null
+    let interval: string | number | NodeJS.Timeout | null | undefined = null
 
     checkAndRefreshToken({
       onError: () => {
@@ -26,7 +26,6 @@ export default function RefreshToken() {
       () =>
         checkAndRefreshToken({
           onError: () => {
-            clearInterval(interval)
             router.push("/login")
           },
         }),
@@ -38,5 +37,5 @@ export default function RefreshToken() {
     }
   }, [pathname, router])
 
-  return <div>RefreshToken</div>
+  return null
 }
