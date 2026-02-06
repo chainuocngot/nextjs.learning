@@ -76,9 +76,9 @@ export default function AddEmployee() {
         const formData = new FormData()
         formData.append("file", file)
 
-        const updateImageResult =
+        const employeeImageResult =
           await uploadMediaMutation.mutateAsync(formData)
-        const imageUrl = updateImageResult.payload.data
+        const imageUrl = employeeImageResult.payload.data
         body = {
           ...values,
           avatar: imageUrl,
@@ -118,7 +118,7 @@ export default function AddEmployee() {
             noValidate
             className="grid auto-rows-max items-start gap-4 md:gap-8"
             id="add-employee-form"
-            onSubmit={form.handleSubmit(onSubmit, console.log)}
+            onSubmit={form.handleSubmit(onSubmit, console.warn)}
             onReset={reset}
           >
             <div className="grid gap-4 py-4">

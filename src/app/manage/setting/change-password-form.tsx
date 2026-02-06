@@ -48,7 +48,7 @@ export default function ChangePasswordForm() {
       <form
         noValidate
         className="grid auto-rows-max items-start gap-4 md:gap-8"
-        onSubmit={form.handleSubmit(onSubmit)}
+        onSubmit={form.handleSubmit(onSubmit, console.warn)}
         onReset={reset}
       >
         <Card className="overflow-hidden" x-chunk="dashboard-07-chunk-4">

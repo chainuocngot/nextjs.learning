@@ -95,7 +95,7 @@ export default function UpdateProfileForm() {
         noValidate
         className="grid auto-rows-max items-start gap-4 md:gap-8"
         onReset={reset}
-        onSubmit={form.handleSubmit(onSubmit)}
+        onSubmit={form.handleSubmit(onSubmit, console.warn)}
       >
         <Card x-chunk="dashboard-07-chunk-0">
           <CardHeader>
