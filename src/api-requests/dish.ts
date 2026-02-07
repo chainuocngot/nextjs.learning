@@ -8,7 +8,10 @@ import {
 
 const prefix = "/dishes"
 const dishApiRequests = {
-  list: () => http.get<DishListResType>(prefix),
+  list: () =>
+    http.get<DishListResType>(prefix, {
+      cache: "no-store",
+    }),
 
   getDish: (id: number) => http.get<DishResType>(`${prefix}/${id}`),
 
