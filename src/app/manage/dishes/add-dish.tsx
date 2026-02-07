@@ -39,6 +39,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { useCreateDishMutation } from "@/queries/useDish"
 import { useUploadMediaMutation } from "@/queries/useMedia"
 import { toast } from "sonner"
+import revalidateApiRequests from "@/api-requests/revalidate"
 
 export default function AddDish() {
   const [file, setFile] = useState<File | null>(null)
@@ -93,6 +94,7 @@ export default function AddDish() {
         }
       }
       const result = await createDishMutation.mutateAsync(body)
+      await revalidateApiRequests.revalidateTag("dishes")
       toast.success(result.payload.message)
       reset()
       setOpen(false)
