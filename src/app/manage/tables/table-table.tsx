@@ -43,14 +43,15 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
-import { getVietnameseTableStatus } from "@/lib/utils"
+import { getVietnameseTableStatus, handleErrorApi } from "@/lib/utils"
 import { useSearchParams } from "next/navigation"
 import AutoPagination from "@/components/auto-pagination"
 import { TableListResType } from "@/schemaValidations/table.schema"
 import EditTable from "@/app/manage/tables/edit-table"
 import AddTable from "@/app/manage/tables/add-table"
-import { useGetTableList } from "@/queries/useTable"
+import { useDeleteTableMutation, useGetTableList } from "@/queries/useTable"
 import QRCodeTable from "@/app/manage/tables/qrcode-table"
+import { toast } from "sonner"
 
 type TableItem = TableListResType["data"][0]
 
@@ -73,6 +74,10 @@ export const columns: ColumnDef<TableItem>[] = [
     cell: ({ row }) => (
       <div className="capitalize">{row.getValue("number")}</div>
     ),
+    filterFn: (row, columnId, filterValue) => {
+      const rowValue = row.getValue<string>(columnId)
+      return rowValue.toString().includes(filterValue)
+    },
   },
   {
     accessorKey: "capacity",
@@ -139,6 +144,20 @@ function AlertDialogDeleteTable({
   tableDelete: TableItem | null
   setTableDelete: (value: TableItem | null) => void
 }) {
+  const deleteTableMutation = useDeleteTableMutation()
+
+  const deleteTable = async () => {
+    if (tableDelete) {
+      try {
+        const result = await deleteTableMutation.mutateAsync(tableDelete.number)
+        setTableDelete(null)
+        toast.success(result.payload.message)
+      } catch (error) {
+        handleErrorApi({ error })
+      }
+    }
+  }
+
   return (
     <AlertDialog
       open={Boolean(tableDelete)}
@@ -161,7 +180,7 @@ function AlertDialogDeleteTable({
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction>Continue</AlertDialogAction>
+          <AlertDialogAction onClick={deleteTable}>Continue</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

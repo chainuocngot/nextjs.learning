@@ -82,11 +82,11 @@ export default function EditTable({
   }
 
   const onSubmit = async (values: UpdateTableBodyType) => {
-    if (updateTableMutation.isPending || !id) return
+    if (updateTableMutation.isPending || !data?.payload.data.number) return
 
     try {
-      const body: UpdateTableBodyType & { id: number } = {
-        id,
+      const body: UpdateTableBodyType & { number: number } = {
+        number: data.payload.data.number,
         ...values,
       }
 
