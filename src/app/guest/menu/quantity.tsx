@@ -1,0 +1,34 @@
+import { Minus, Plus } from "lucide-react"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+
+export default function Quantity({
+  value,
+  onChange,
+}: {
+  value: number
+  onChange: (value: number) => void
+}) {
+  return (
+    <div className="shrink-0 ml-auto flex justify-center items-center">
+      <div className="flex gap-1 ">
+        <Button
+          className="h-6 w-6 p-0"
+          disabled={value === 0}
+          onClick={() => onChange(value - 1)}
+        >
+          <Minus className="w-3 h-3" />
+        </Button>
+        <Input
+          type="text"
+          readOnly
+          className="h-6 p-1 w-8 text-center"
+          value={value}
+        />
+        <Button className="h-6 w-6 p-0" onClick={() => onChange(value + 1)}>
+          <Plus className="w-3 h-3" />
+        </Button>
+      </div>
+    </div>
+  )
+}
