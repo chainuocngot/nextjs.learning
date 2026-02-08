@@ -25,7 +25,7 @@ export default function LoginForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const loginMutation = useLoginMutation()
-  const { setIsAuth } = useAppContext()
+  const { setRole } = useAppContext()
   const form = useForm<LoginBodyType>({
     resolver: zodResolver(LoginBody),
     defaultValues: {
@@ -38,9 +38,9 @@ export default function LoginForm() {
 
   useEffect(() => {
     if (clearTokens) {
-      setIsAuth(false)
+      setRole(undefined)
     }
-  }, [clearTokens, setIsAuth])
+  }, [clearTokens, setRole])
 
   const onSubmit = async (data: LoginBodyType) => {
     if (loginMutation.isPending) return
@@ -48,7 +48,7 @@ export default function LoginForm() {
     try {
       const result = await loginMutation.mutateAsync(data)
       toast.success(result.payload.message)
-      setIsAuth(true)
+      setRole(result.payload.data.account.role)
       router.push("/manage/dashboard")
     } catch (error) {
       handleErrorApi({
