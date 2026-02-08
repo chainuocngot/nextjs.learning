@@ -6,9 +6,10 @@ import { toast } from "sonner"
 import { twMerge } from "tailwind-merge"
 import jwt from "jsonwebtoken"
 import authApiRequests from "@/api-requests/auth"
-import { DishStatus, OrderStatus, TableStatus } from "@/constants/type"
+import { DishStatus, OrderStatus, Role, TableStatus } from "@/constants/type"
 import envConfig from "@/config"
 import { TokenPayload } from "@/types/jwt.types"
+import guestApiRequests from "@/api-requests/guest"
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -84,14 +85,8 @@ export const checkAndRefreshToken = async (params?: {
   const refreshToken = getRefreshTokenFromLocalStorage()
 
   if (!accessToken || !refreshToken) return
-  const decodedAccessToken = decodeToken(accessToken) as {
-    exp: number
-    iat: number
-  }
-  const decodedRefreshToken = decodeToken(refreshToken) as {
-    exp: number
-    iat: number
-  }
+  const decodedAccessToken = decodeToken(accessToken)
+  const decodedRefreshToken = decodeToken(refreshToken)
 
   const now = new Date().getTime() / 1000 - 1
 
@@ -107,7 +102,11 @@ export const checkAndRefreshToken = async (params?: {
   const accessTokenLiveTime = decodedAccessToken.exp - decodedAccessToken.iat
   if (accessTokenSecondsRemain < accessTokenLiveTime / 3) {
     try {
-      const res = await authApiRequests.cRefreshToken()
+      const role = decodedRefreshToken.role
+      const res =
+        role === Role.Guest
+          ? await guestApiRequests.cRefreshToken()
+          : await authApiRequests.cRefreshToken()
 
       if (res) {
         setAccessTokenToLocalStorage(res.payload.data.accessToken)
