@@ -5,16 +5,18 @@ import { Button } from "@/components/ui/button"
 export default function Quantity({
   value,
   onChange,
+  disabled,
 }: {
   value: number
   onChange: (value: number) => void
+  disabled?: boolean
 }) {
   return (
     <div className="shrink-0 ml-auto flex justify-center items-center">
       <div className="flex gap-1 ">
         <Button
           className="h-6 w-6 p-0"
-          disabled={value === 0}
+          disabled={value === 0 || disabled}
           onClick={() => onChange(value - 1)}
         >
           <Minus className="w-3 h-3" />
@@ -25,7 +27,11 @@ export default function Quantity({
           className="h-6 p-1 w-8 text-center"
           value={value}
         />
-        <Button className="h-6 w-6 p-0" onClick={() => onChange(value + 1)}>
+        <Button
+          className="h-6 w-6 p-0"
+          disabled={disabled}
+          onClick={() => onChange(value + 1)}
+        >
           <Plus className="w-3 h-3" />
         </Button>
       </div>
