@@ -6,9 +6,14 @@ import {
 } from "@/schemaValidations/auth.schema"
 import { MessageResType } from "@/schemaValidations/common.schema"
 import {
+  GuestGetOrdersResType,
   GuestLoginBodyType,
   GuestLoginResType,
 } from "@/schemaValidations/guest.schema"
+import {
+  CreateOrdersBodyType,
+  CreateOrdersResType,
+} from "@/schemaValidations/order.schema"
 
 const guestApiRequests = {
   refreshTokenRequest: null as Promise<{
@@ -66,6 +71,11 @@ const guestApiRequests = {
   },
   sRefreshToken: (body: RefreshTokenBodyType) =>
     http.post<RefreshTokenResType>("/guest/auth/refresh-token", body),
+
+  createOrder: (body: CreateOrdersBodyType) =>
+    http.post<CreateOrdersResType>("/guest/orders", body),
+
+  getOrderList: () => http.get<GuestGetOrdersResType>("/guest/orders"),
 }
 
 export default guestApiRequests
