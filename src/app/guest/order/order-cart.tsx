@@ -2,12 +2,41 @@
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { socket } from "@/lib/socket"
 import { formatCurrency, getVietnameseOrderStatus } from "@/lib/utils"
 import { useGuestListOrders } from "@/queries/useGuest"
 import Image from "next/image"
+import { useEffect } from "react"
 
 export default function OrderCart() {
-  const { data } = useGuestListOrders()
+  const { data, refetch } = useGuestListOrders()
+
+  useEffect(() => {
+    if (socket.connected) {
+      onConnect()
+    }
+
+    function onConnect() {
+      console.log("Connected to socket with id:", socket.id)
+    }
+
+    function onDisconnect() {
+      console.log("Disconnected from socket")
+    }
+
+    function onUpdateOrder() {
+      refetch()
+    }
+
+    socket.on("update-order", onUpdateOrder)
+    socket.on("connect", onConnect)
+    socket.on("disconnect", onDisconnect)
+
+    return () => {
+      socket.off("connect", onConnect)
+      socket.off("disconnect", onDisconnect)
+    }
+  }, [refetch])
 
   const orders = data?.payload.data ?? []
 
