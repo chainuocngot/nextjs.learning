@@ -16,7 +16,7 @@ const menuItems = [
   {
     title: "Đơn hàng",
     Icon: ShoppingCart,
-    href: "/manage/orders",
+    href: "/manage/order",
   },
   {
     title: "Bàn ăn",

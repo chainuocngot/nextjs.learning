@@ -7,6 +7,7 @@ import { formatCurrency, getVietnameseOrderStatus } from "@/lib/utils"
 import { useGuestListOrders } from "@/queries/useGuest"
 import Image from "next/image"
 import { useEffect } from "react"
+import { toast } from "sonner"
 
 export default function OrderCart() {
   const { data, refetch } = useGuestListOrders()
@@ -26,6 +27,7 @@ export default function OrderCart() {
 
     function onUpdateOrder() {
       refetch()
+      toast("Đơn hàng của bạn đã được cập nhật")
     }
 
     socket.on("update-order", onUpdateOrder)
