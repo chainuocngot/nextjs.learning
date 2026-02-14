@@ -50,6 +50,9 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { endOfDay, format, startOfDay } from "date-fns"
+import { useOrderList } from "@/queries/useOrder"
+import { useGetTableList } from "@/queries/useTable"
+import TableSkeleton from "@/app/manage/order/table-skeleton"
 
 export const OrderTableContext = createContext({
   setOrderIdEdit: (value: number | undefined) => {},
@@ -77,6 +80,7 @@ export type ServingGuestByTableNumber = Record<number, OrderObjectByGuestID>
 const PAGE_SIZE = 10
 const initFromDate = startOfDay(new Date())
 const initToDate = endOfDay(new Date())
+
 export default function OrderTable() {
   const searchParam = useSearchParams()
   const [openStatusFilter, setOpenStatusFilter] = useState(false)
@@ -85,11 +89,15 @@ export default function OrderTable() {
   const page = searchParam.get("page") ? Number(searchParam.get("page")) : 1
   const pageIndex = page - 1
   const [orderIdEdit, setOrderIdEdit] = useState<number | undefined>()
-  const orderList: any = []
-  const tableList: any = []
-  const tableListSortedByNumber = tableList.sort(
-    (a: any, b: any) => a.number - b.number,
-  )
+  const orderListQuery = useOrderList({
+    fromDate,
+    toDate,
+  })
+  const orderList = orderListQuery.data?.payload.data ?? []
+
+  const tableListQuery = useGetTableList()
+  const tableList = tableListQuery.data?.payload.data ?? []
+  const tableListSortedByNumber = tableList.sort((a, b) => a.number - b.number)
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
@@ -109,6 +117,7 @@ export default function OrderTable() {
     quantity: number
   }) => {}
 
+  // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
     data: orderList,
     columns: orderTableColumns,
@@ -269,7 +278,7 @@ export default function OrderTable() {
           tableList={tableListSortedByNumber}
           servingGuestByTableNumber={servingGuestByTableNumber}
         />
-        {/* <TableSkeleton /> */}
+        {orderListQuery.isLoading && <TableSkeleton />}
         <div className="rounded-md border">
           <Table>
             <TableHeader>
