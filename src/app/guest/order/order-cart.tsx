@@ -2,6 +2,7 @@
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { OrderStatus } from "@/constants/type"
 import { socket } from "@/lib/socket"
 import { formatCurrency, getVietnameseOrderStatus } from "@/lib/utils"
 import { useGuestListOrders } from "@/queries/useGuest"
@@ -43,9 +44,41 @@ export default function OrderCart() {
 
   const orders = data?.payload.data ?? []
 
-  const totalPrice = orders.reduce(
-    (total, order) => total + order.dishSnapshot.price * order.quantity,
-    0,
+  const { waitingForPaying, payed } = orders.reduce(
+    (total, order) => {
+      if (
+        order.status === OrderStatus.Delivered ||
+        order.status === OrderStatus.Processing ||
+        order.status === OrderStatus.Pending
+      ) {
+        return {
+          ...total,
+          waitingForPaying: {
+            price:
+              total.waitingForPaying.price +
+              order.dishSnapshot.price * order.quantity,
+            quantity: total.waitingForPaying.quantity + order.quantity,
+          },
+        }
+      }
+      return {
+        ...total,
+        payed: {
+          price: total.payed.price + order.dishSnapshot.price * order.quantity,
+          quantity: total.payed.quantity + order.quantity,
+        },
+      }
+    },
+    {
+      waitingForPaying: {
+        price: 0,
+        quantity: 0,
+      },
+      payed: {
+        price: 0,
+        quantity: 0,
+      },
+    },
   )
 
   return (
@@ -73,9 +106,15 @@ export default function OrderCart() {
           </Badge>
         </div>
       ))}
+      {!!payed.price && (
+        <div className="w-full flex justify-between">
+          <span>Đơn đã thanh toán | {payed.quantity} món</span>
+          <span>{formatCurrency(payed.price)}</span>
+        </div>
+      )}
       <Button className="w-full justify-between" disabled={orders.length === 0}>
-        <span>Tổng cộng | {orders.length} món</span>
-        <span>{formatCurrency(totalPrice)}</span>
+        <span>Đơn chưa thanh toán | {waitingForPaying.quantity} món</span>
+        <span>{formatCurrency(waitingForPaying.price)}</span>
       </Button>
     </>
   )
