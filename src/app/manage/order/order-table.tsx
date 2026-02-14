@@ -50,9 +50,12 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { endOfDay, format, startOfDay } from "date-fns"
-import { useOrderList } from "@/queries/useOrder"
+import { useOrderList, useUpdateOrderMutation } from "@/queries/useOrder"
 import { useGetTableList } from "@/queries/useTable"
 import TableSkeleton from "@/app/manage/order/table-skeleton"
+import { socket } from "@/lib/socket"
+import { toast } from "sonner"
+import { GuestCreateOrdersResType } from "@/schemaValidations/guest.schema"
 
 export const OrderTableContext = createContext({
   setOrderIdEdit: (value: number | undefined) => {},
@@ -93,6 +96,7 @@ export default function OrderTable() {
     fromDate,
     toDate,
   })
+  const { refetch } = orderListQuery
   const orderList = orderListQuery.data?.payload.data ?? []
 
   const tableListQuery = useGetTableList()
@@ -109,13 +113,20 @@ export default function OrderTable() {
 
   const { statics, orderObjectByGuestId, servingGuestByTableNumber } =
     useOrderService(orderList)
+  const updateOrderMutation = useUpdateOrderMutation()
 
   const changeStatus = async (body: {
     orderId: number
     dishId: number
     status: (typeof OrderStatusValues)[number]
     quantity: number
-  }) => {}
+  }) => {
+    try {
+      await updateOrderMutation.mutateAsync(body)
+    } catch (error) {
+      handleErrorApi({ error })
+    }
+  }
 
   // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
@@ -146,6 +157,52 @@ export default function OrderTable() {
       pageSize: PAGE_SIZE,
     })
   }, [table, pageIndex])
+
+  useEffect(() => {
+    if (socket.connected) {
+      onConnect()
+    }
+
+    function onConnect() {
+      console.log("Connected to socket with id:", socket.id)
+    }
+
+    function onDisconnect() {
+      console.log("Disconnected from socket")
+    }
+
+    function refetchDependOnFilter() {
+      const now = new Date()
+      if (now >= fromDate && now <= toDate) {
+        refetch()
+      }
+    }
+
+    function onUpdateOrder() {
+      refetchDependOnFilter()
+      toast("Đơn hàng của bạn đã được cập nhật")
+    }
+
+    function onNewOrder(data: GuestCreateOrdersResType["data"]) {
+      refetchDependOnFilter()
+      const { guest } = data[0]
+      toast(
+        `${guest?.name} tại bàn ${guest?.tableNumber} vừa đặt ${data.length} đơn!`,
+      )
+    }
+
+    socket.on("update-order", onUpdateOrder)
+    socket.on("connect", onConnect)
+    socket.on("disconnect", onDisconnect)
+    socket.on("new-order", onNewOrder)
+
+    return () => {
+      socket.off("connect", onConnect)
+      socket.off("disconnect", onDisconnect)
+      socket.off("update-order", onUpdateOrder)
+      socket.off("new-order", onNewOrder)
+    }
+  }, [fromDate, refetch, toDate])
 
   const resetDateFilter = () => {
     setFromDate(initFromDate)
