@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/dialog"
 import { PlusCircle } from "lucide-react"
 import { useMemo, useState } from "react"
-import { useForm } from "react-hook-form"
+import { useForm, useWatch } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import {
   GuestLoginBody,
@@ -26,9 +26,13 @@ import GuestsDialog from "@/app/manage/order/guests-dialog"
 import { CreateOrdersBodyType } from "@/schemaValidations/order.schema"
 import Quantity from "@/app/guest/menu/quantity"
 import Image from "next/image"
-import { cn, formatCurrency } from "@/lib/utils"
+import { cn, formatCurrency, handleErrorApi } from "@/lib/utils"
 import { DishStatus } from "@/constants/type"
-import { DishListResType } from "@/schemaValidations/dish.schema"
+import { useGetDishList } from "@/queries/useDish"
+import { useCreateOrderMutation } from "@/queries/useOrder"
+import { useCreateGuestMutation } from "@/queries/useAccount"
+import { create } from "domain"
+import { toast } from "sonner"
 
 export default function AddOrder() {
   const [open, setOpen] = useState(false)
@@ -36,8 +40,13 @@ export default function AddOrder() {
     GetListGuestsResType["data"][0] | null
   >(null)
   const [isNewGuest, setIsNewGuest] = useState(true)
+  const createOrderMutation = useCreateOrderMutation()
+  const createGuestMutation = useCreateGuestMutation()
   const [orders, setOrders] = useState<CreateOrdersBodyType["orders"]>([])
-  const dishes: DishListResType["data"] = []
+  const { data } = useGetDishList()
+  const dishes = useMemo(() => {
+    return data?.payload.data ?? []
+  }, [data])
 
   const totalPrice = useMemo(() => {
     return dishes.reduce((result, dish) => {
@@ -54,8 +63,8 @@ export default function AddOrder() {
       tableNumber: 0,
     },
   })
-  const name = form.watch("name")
-  const tableNumber = form.watch("tableNumber")
+  const name = useWatch({ control: form.control, name: "name" })
+  const tableNumber = useWatch({ control: form.control, name: "tableNumber" })
 
   const handleQuantityChange = (dishId: number, quantity: number) => {
     setOrders((prevOrders) => {
@@ -72,10 +81,52 @@ export default function AddOrder() {
     })
   }
 
-  const handleOrder = async () => {}
+  const handleOrder = async () => {
+    if (createOrderMutation.isPending || createGuestMutation.isPending) return
+
+    try {
+      let guestId = selectedGuest?.id
+
+      if (isNewGuest) {
+        const createGuestRes = await createGuestMutation.mutateAsync({
+          name,
+          tableNumber,
+        })
+        guestId = createGuestRes.payload.data.id
+      }
+
+      if (!guestId) {
+        toast.error("Vui lòng chọn hoặc tạo khách hàng trước khi đặt hàng")
+        return
+      }
+
+      const createOrderRes = await createOrderMutation.mutateAsync({
+        guestId,
+        orders,
+      })
+    } catch (error) {
+      handleErrorApi({ error, setError: form.setError })
+    }
+  }
+
+  const reset = () => {
+    setSelectedGuest(null)
+    setIsNewGuest(true)
+    setOrders([])
+    form.reset()
+    setOpen(false)
+  }
 
   return (
-    <Dialog onOpenChange={setOpen} open={open}>
+    <Dialog
+      onOpenChange={(value) => {
+        if (!value) {
+          reset()
+        }
+        setOpen(value)
+      }}
+      open={open}
+    >
       <DialogTrigger asChild>
         <Button size="sm" className="h-7 gap-1">
           <PlusCircle className="h-3.5 w-3.5" />
@@ -104,6 +155,7 @@ export default function AddOrder() {
               noValidate
               className="grid auto-rows-max items-start gap-4 md:gap-8"
               id="add-employee-form"
+              onSubmit={form.handleSubmit(handleOrder, console.warn)}
             >
               <div className="grid gap-4 py-4">
                 <FormField

@@ -9,7 +9,9 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 export const useOrderList = (queryParams: GetOrdersQueryParamsType) => {
   return useQuery({
     queryKey: ["orders", queryParams],
-    queryFn: () => orderApiRequests.list(queryParams),
+    queryFn: () => {
+      return orderApiRequests.list(queryParams)
+    },
   })
 }
 
@@ -39,16 +41,9 @@ export const useGetOrderDetail = ({
 }
 
 export const useCreateOrderMutation = () => {
-  const queryClient = useQueryClient()
-
   return useMutation({
     mutationFn: (body: CreateOrdersBodyType) =>
       orderApiRequests.createOrder(body),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["orders"],
-      })
-    },
   })
 }
 
