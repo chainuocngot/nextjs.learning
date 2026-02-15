@@ -1,7 +1,6 @@
 "use client"
 
-import { TrendingUp } from "lucide-react"
-import { Bar, BarChart, XAxis, YAxis } from "recharts"
+import { Bar, BarChart, Cell, XAxis, YAxis } from "recharts"
 
 import {
   Card,
@@ -18,41 +17,26 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart"
 
-const chartConfig = {
-  visitors: {
-    label: "Visitors",
-  },
-  chrome: {
-    label: "Chrome",
-    color: "var(--chart-1)",
-  },
-  safari: {
-    label: "Safari",
-    color: "var(--chart-2)",
-  },
-  firefox: {
-    label: "Firefox",
-    color: "var(--chart-3)",
-  },
-  edge: {
-    label: "Edge",
-    color: "var(--chart-4)",
-  },
-  other: {
-    label: "Other",
-    color: "var(--chart-5)",
-  },
-} satisfies ChartConfig
-
-const chartData = [
-  { name: "chrome", successOrders: 275, fill: "var(--color-chrome)" },
-  { name: "safari", successOrders: 200, fill: "var(--color-safari)" },
-  { name: "firefox", successOrders: 187, fill: "var(--color-firefox)" },
-  { name: "edge", successOrders: 173, fill: "var(--color-edge)" },
-  { name: "other", successOrders: 90, fill: "var(--color-other)" },
+const colors = [
+  "var(--chart-1)",
+  "var(--chart-2)",
+  "var(--chart-3)",
+  "var(--chart-4)",
+  "var(--chart-5)",
 ]
 
-export function DishBarChart() {
+export function DishBarChart({
+  data,
+}: {
+  data: { name: string; successOrders: number }[]
+}) {
+  const chartConfig: ChartConfig = {
+    successOrders: {
+      label: "Đơn thanh toán",
+      color: "var(--chart-1)",
+    },
+  }
+
   return (
     <Card>
       <CardHeader>
@@ -63,7 +47,7 @@ export function DishBarChart() {
         <ChartContainer config={chartConfig}>
           <BarChart
             accessibilityLayer
-            data={chartData}
+            data={data}
             layout="vertical"
             margin={{
               left: 0,
@@ -85,10 +69,17 @@ export function DishBarChart() {
             <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
             <Bar
               dataKey="successOrders"
-              name={"Đơn thanh toán"}
+              name={"Đơn thanh toán: "}
               layout="vertical"
               radius={5}
-            />
+            >
+              {data.map((item, index) => (
+                <Cell
+                  key={`${item.name}-${index}`}
+                  fill={colors[index % colors.length]}
+                />
+              ))}
+            </Bar>
           </BarChart>
         </ChartContainer>
       </CardContent>
