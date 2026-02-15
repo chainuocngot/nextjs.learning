@@ -403,7 +403,13 @@ export default function OrderTable() {
             <AutoPagination
               page={table.getState().pagination.pageIndex + 1}
               pageSize={table.getPageCount()}
-              pathname="/manage/order"
+              isLink={false}
+              onClick={(page) => {
+                table.setPagination({
+                  pageIndex: page - 1,
+                  pageSize: PAGE_SIZE,
+                })
+              }}
             />
           </div>
         </div>
