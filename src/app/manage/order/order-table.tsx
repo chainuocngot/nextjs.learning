@@ -191,16 +191,23 @@ export default function OrderTable() {
       )
     }
 
+    function onPay(data: PayGuestOrdersResType["data"]) {
+      const { guest } = data[0]
+      toast(`${guest?.name} tại bàn ${guest?.tableNumber} vừa thanh toán xong!`)
+    }
+
     socket.on("update-order", onUpdateOrder)
     socket.on("connect", onConnect)
     socket.on("disconnect", onDisconnect)
     socket.on("new-order", onNewOrder)
+    socket.on("payment", onPay)
 
     return () => {
       socket.off("connect", onConnect)
       socket.off("disconnect", onDisconnect)
       socket.off("update-order", onUpdateOrder)
       socket.off("new-order", onNewOrder)
+      socket.off("payment", onPay)
     }
   }, [fromDate, refetch, toDate])
 

@@ -2,6 +2,7 @@ import orderApiRequests from "@/api-requests/order"
 import {
   CreateOrdersBodyType,
   GetOrdersQueryParamsType,
+  PayGuestOrdersBodyType,
   UpdateOrderBodyType,
 } from "@/schemaValidations/order.schema"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
@@ -44,6 +45,19 @@ export const useCreateOrderMutation = () => {
   return useMutation({
     mutationFn: (body: CreateOrdersBodyType) =>
       orderApiRequests.createOrder(body),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["orders"],
+      })
+    },
+  })
+}
+
+export const usePayGuestOrdersMutation = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: orderApiRequests.payGuestOrders,
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["orders"],
