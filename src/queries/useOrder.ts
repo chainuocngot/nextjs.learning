@@ -2,7 +2,6 @@ import orderApiRequests from "@/api-requests/order"
 import {
   CreateOrdersBodyType,
   GetOrdersQueryParamsType,
-  PayGuestOrdersBodyType,
   UpdateOrderBodyType,
 } from "@/schemaValidations/order.schema"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
