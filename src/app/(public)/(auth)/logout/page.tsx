@@ -15,7 +15,7 @@ function Logout() {
   const searchParams = useSearchParams()
   const ref = useRef<UseMutateAsyncFunction>(null)
   const { mutateAsync } = useLogoutMutation()
-  const { setRole } = useAppContext()
+  const { setRole, disconnectSocket } = useAppContext()
 
   const refreshTokenFromUrl = searchParams.get("refreshToken")
   const accessTokenFromUrl = searchParams.get("accessToken")
@@ -41,10 +41,18 @@ function Logout() {
         }, 1000)
 
         setRole(undefined)
+        disconnectSocket()
         router.push("/login")
       })
     }
-  }, [accessTokenFromUrl, mutateAsync, refreshTokenFromUrl, router, setRole])
+  }, [
+    accessTokenFromUrl,
+    mutateAsync,
+    refreshTokenFromUrl,
+    router,
+    setRole,
+    disconnectSocket,
+  ])
   return null
 }
 

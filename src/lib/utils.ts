@@ -12,6 +12,7 @@ import { TokenPayload } from "@/types/jwt.types"
 import guestApiRequests from "@/api-requests/guest"
 import { BookX, CookingPot, HandCoins, Loader, Truck } from "lucide-react"
 import { format } from "date-fns"
+import { io } from "socket.io-client"
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -220,4 +221,12 @@ export const OrderStatusIcon = {
   [OrderStatus.Rejected]: BookX,
   [OrderStatus.Delivered]: Truck,
   [OrderStatus.Paid]: HandCoins,
+}
+
+export const generateSocketInstance = (accessToken: string) => {
+  return io(envConfig.NEXT_PUBLIC_API_ENDPOINT!, {
+    auth: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  })
 }

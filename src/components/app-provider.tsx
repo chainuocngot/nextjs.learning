@@ -6,16 +6,19 @@ import {
   PropsWithChildren,
   useContext,
   useEffect,
+  useRef,
   useState,
 } from "react"
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 import RefreshToken from "@/components/refresh-token"
 import {
   decodeToken,
+  generateSocketInstance,
   getAccessTokenFromLocalStorage,
   removeTokensFromLocalStorage,
 } from "@/lib/utils"
 import { RoleType } from "@/types/jwt.types"
+import { Socket } from "socket.io-client"
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -29,10 +32,16 @@ const AppContext = createContext<{
   isAuth: boolean
   role: RoleType | undefined
   setRole: (role: RoleType | undefined) => void
+  socket: Socket | undefined
+  setSocket: (socket: Socket | undefined) => void
+  disconnectSocket: () => void
 }>({
   isAuth: false,
   role: undefined,
   setRole: () => {},
+  socket: undefined,
+  setSocket: () => {},
+  disconnectSocket: () => {},
 })
 
 export const useAppContext = () => {
@@ -41,13 +50,19 @@ export const useAppContext = () => {
 
 export default function AppProvider({ children }: PropsWithChildren) {
   const [role, setRoleState] = useState<RoleType | undefined>(undefined)
+  const [socket, setSocket] = useState<Socket | undefined>(undefined)
+  const count = useRef(0)
 
   useEffect(() => {
-    const accessToken = getAccessTokenFromLocalStorage()
+    if (count.current === 0) {
+      const accessToken = getAccessTokenFromLocalStorage()
 
-    if (accessToken) {
-      const role = decodeToken(accessToken).role
-      setRoleState(role)
+      if (accessToken) {
+        const role = decodeToken(accessToken).role
+        setRoleState(role)
+        setSocket(generateSocketInstance(accessToken))
+      }
+      count.current += 1
     }
   }, [])
 
@@ -59,6 +74,11 @@ export default function AppProvider({ children }: PropsWithChildren) {
     }
   }
 
+  const disconnectSocket = () => {
+    socket?.disconnect()
+    setSocket(undefined)
+  }
+
   const isAuth = Boolean(role)
 
   return (
@@ -67,6 +87,9 @@ export default function AppProvider({ children }: PropsWithChildren) {
         isAuth,
         role,
         setRole,
+        socket,
+        setSocket,
+        disconnectSocket,
       }}
     >
       <QueryClientProvider client={queryClient}>

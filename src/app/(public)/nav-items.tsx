@@ -42,7 +42,7 @@ const menuItems: {
 ]
 
 export default function NavItems({ className }: { className?: string }) {
-  const { isAuth, role, setRole } = useAppContext()
+  const { isAuth, role, disconnectSocket, setRole } = useAppContext()
   const router = useRouter()
   const logoutMutation = useLogoutMutation()
 
@@ -53,7 +53,10 @@ export default function NavItems({ className }: { className?: string }) {
       const result = await logoutMutation.mutateAsync()
 
       toast.success(result.payload.message)
+
       setRole(undefined)
+      disconnectSocket()
+
       router.push("/login")
     } catch (error) {
       handleErrorApi({

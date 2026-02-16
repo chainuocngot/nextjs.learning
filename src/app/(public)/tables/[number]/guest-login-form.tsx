@@ -15,11 +15,11 @@ import { useParams, useRouter, useSearchParams } from "next/navigation"
 import { useEffect } from "react"
 import { useGuestLoginMutation } from "@/queries/useGuest"
 import { toast } from "sonner"
-import { handleErrorApi } from "@/lib/utils"
+import { generateSocketInstance, handleErrorApi } from "@/lib/utils"
 import { useAppContext } from "@/components/app-provider"
 
 export default function GuestLoginForm() {
-  const { setRole } = useAppContext()
+  const { setRole, setSocket } = useAppContext()
   const router = useRouter()
   const searchParams = useSearchParams()
   const params = useParams()
@@ -50,6 +50,7 @@ export default function GuestLoginForm() {
     try {
       const result = await guestLoginMutation.mutateAsync(values)
       setRole(result.payload.data.guest.role)
+      setSocket(generateSocketInstance(result.payload.data.accessToken))
       toast.success(result.payload.message)
       router.push("/guest/menu")
     } catch (error) {
