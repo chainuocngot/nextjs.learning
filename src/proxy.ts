@@ -5,6 +5,7 @@ import { NextRequest } from "next/server"
 
 const managePaths = ["/manage"]
 const guestPaths = ["/guest"]
+const onlyOwnerPaths = ["/manage/accounts"]
 const privatePaths = [...managePaths, ...guestPaths]
 const unAuthPaths = ["/login"]
 
@@ -48,6 +49,12 @@ export function proxy(request: NextRequest) {
     const isTryingToAccessGuestPath = guestPaths.some((path) =>
       pathname.startsWith(path),
     )
+    if (
+      role !== Role.Owner &&
+      onlyOwnerPaths.some((path) => pathname.startsWith(path))
+    ) {
+      return NextResponse.redirect(new URL("/", request.url))
+    }
     if (role === Role.Guest && isTryingToAccessManagePath) {
       return NextResponse.redirect(new URL("/", request.url))
     }
