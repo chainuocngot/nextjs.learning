@@ -82,6 +82,7 @@ export const removeTokensFromLocalStorage = () => {
 export const checkAndRefreshToken = async (params?: {
   onError?: () => void
   onSuccess?: () => void
+  force?: boolean
 }) => {
   const accessToken = getAccessTokenFromLocalStorage()
   const refreshToken = getRefreshTokenFromLocalStorage()
@@ -102,7 +103,7 @@ export const checkAndRefreshToken = async (params?: {
 
   const accessTokenSecondsRemain = decodedAccessToken.exp - now
   const accessTokenLiveTime = decodedAccessToken.exp - decodedAccessToken.iat
-  if (accessTokenSecondsRemain < accessTokenLiveTime / 3) {
+  if (accessTokenSecondsRemain < accessTokenLiveTime / 3 || params?.force) {
     try {
       const role = decodedRefreshToken.role
       const res =
