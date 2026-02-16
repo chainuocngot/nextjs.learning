@@ -19,6 +19,7 @@ import {
 } from "@/lib/utils"
 import { RoleType } from "@/types/jwt.types"
 import { Socket } from "socket.io-client"
+import ListenLogoutSocket from "@/components/listen-logout-socket"
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -96,6 +97,7 @@ export default function AppProvider({ children }: PropsWithChildren) {
         {children}
         <ReactQueryDevtools />
         <RefreshToken />
+        <ListenLogoutSocket />
       </QueryClientProvider>
     </AppContext>
   )

@@ -36,7 +36,7 @@ export default function RefreshToken() {
     }
 
     function onConnect() {
-      console.log(socket?.id)
+      console.log(`Connected to socket ${socket?.id}`)
     }
 
     function onDisconnect() {
