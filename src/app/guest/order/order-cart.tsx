@@ -1,6 +1,6 @@
 "use client"
 
-import { useAppContext } from "@/components/app-provider"
+import { useAppStore } from "@/components/app-provider"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { OrderStatus } from "@/constants/type"
@@ -12,7 +12,7 @@ import { useEffect } from "react"
 import { toast } from "sonner"
 
 export default function OrderCart() {
-  const { socket } = useAppContext()
+  const socket = useAppStore((state) => state.socket)
   const { data, refetch } = useGuestListOrders()
 
   useEffect(() => {

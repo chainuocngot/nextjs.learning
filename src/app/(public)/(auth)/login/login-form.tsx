@@ -19,13 +19,14 @@ import { toast } from "sonner"
 import { generateSocketInstance, handleErrorApi } from "@/lib/utils"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useEffect } from "react"
-import { useAppContext } from "@/components/app-provider"
+import { useAppStore } from "@/components/app-provider"
 
 export default function LoginForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const loginMutation = useLoginMutation()
-  const { setRole, setSocket } = useAppContext()
+  const setRole = useAppStore((state) => state.setRole)
+  const setSocket = useAppStore((state) => state.setSocket)
   const form = useForm<LoginBodyType>({
     resolver: zodResolver(LoginBody),
     defaultValues: {

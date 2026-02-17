@@ -1,4 +1,4 @@
-import { useAppContext } from "@/components/app-provider"
+import { useAppStore } from "@/components/app-provider"
 import { handleErrorApi } from "@/lib/utils"
 import { useLogoutMutation } from "@/queries/useAuth"
 import { usePathname, useRouter } from "next/navigation"
@@ -8,7 +8,9 @@ const UNAUTHENTICATED_PATH = ["/login", "/logout", "/refresh-token"]
 
 export default function ListenLogoutSocket() {
   const router = useRouter()
-  const { socket, setRole, disconnectSocket } = useAppContext()
+  const socket = useAppStore((state) => state.socket)
+  const setRole = useAppStore((state) => state.setRole)
+  const disconnectSocket = useAppStore((state) => state.disconnectSocket)
   const pathname = usePathname()
   const { isPending, mutateAsync } = useLogoutMutation()
 

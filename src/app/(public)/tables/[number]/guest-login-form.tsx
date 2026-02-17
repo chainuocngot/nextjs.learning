@@ -16,10 +16,11 @@ import { useEffect } from "react"
 import { useGuestLoginMutation } from "@/queries/useGuest"
 import { toast } from "sonner"
 import { generateSocketInstance, handleErrorApi } from "@/lib/utils"
-import { useAppContext } from "@/components/app-provider"
+import { useAppStore } from "@/components/app-provider"
 
 export default function GuestLoginForm() {
-  const { setRole, setSocket } = useAppContext()
+  const setRole = useAppStore((state) => state.setRole)
+  const setSocket = useAppStore((state) => state.setSocket)
   const router = useRouter()
   const searchParams = useSearchParams()
   const params = useParams()

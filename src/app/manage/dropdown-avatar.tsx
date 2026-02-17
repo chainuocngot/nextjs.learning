@@ -16,13 +16,14 @@ import { handleErrorApi } from "@/lib/utils"
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
 import { useAccountMe } from "@/queries/useAccount"
-import { useAppContext } from "@/components/app-provider"
+import { useAppStore } from "@/components/app-provider"
 
 export default function DropdownAvatar() {
   const router = useRouter()
   const logoutMutation = useLogoutMutation()
   const { data } = useAccountMe()
-  const { setRole, disconnectSocket } = useAppContext()
+  const setRole = useAppStore((state) => state.setRole)
+  const disconnectSocket = useAppStore((state) => state.disconnectSocket)
 
   const account = data?.payload.data
 
