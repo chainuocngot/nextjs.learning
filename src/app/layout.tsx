@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils"
 import { ThemeProvider } from "@/components/theme-provider"
 import AppProvider from "@/components/app-provider"
 import { Toaster } from "sonner"
+import { NextIntlClientProvider } from "next-intl"
 
 const fontSans = Inter({
   variable: "--font-inter",
@@ -36,7 +37,7 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            {children}
+            <NextIntlClientProvider>{children}</NextIntlClientProvider>
             <Toaster />
           </ThemeProvider>
         </AppProvider>
