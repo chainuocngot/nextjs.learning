@@ -20,8 +20,10 @@ import { generateSocketInstance, handleErrorApi } from "@/lib/utils"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useEffect } from "react"
 import { useAppStore } from "@/components/app-provider"
+import { useTranslations } from "next-intl"
 
 export default function LoginForm() {
+  const t = useTranslations("Login")
   const router = useRouter()
   const searchParams = useSearchParams()
   const loginMutation = useLoginMutation()
@@ -63,10 +65,8 @@ export default function LoginForm() {
   return (
     <Card className="mx-auto w-full max-w-[424px]">
       <CardHeader>
-        <CardTitle className="text-2xl">Đăng nhập</CardTitle>
-        <CardDescription>
-          Nhập email và mật khẩu của bạn để đăng nhập vào hệ thống
-        </CardDescription>
+        <CardTitle className="text-2xl">{t("title")}</CardTitle>
+        <CardDescription>{t("description")}</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>

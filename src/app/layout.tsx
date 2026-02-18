@@ -5,7 +5,10 @@ import { cn } from "@/lib/utils"
 import { ThemeProvider } from "@/components/theme-provider"
 import AppProvider from "@/components/app-provider"
 import { Toaster } from "sonner"
-import { NextIntlClientProvider } from "next-intl"
+import { Locale, NextIntlClientProvider } from "next-intl"
+import { getLocale } from "next-intl/server"
+import { cookies } from "next/headers"
+import LocaleSwitcher from "@/components/local-switcher"
 
 const fontSans = Inter({
   variable: "--font-inter",
@@ -17,13 +20,15 @@ export const metadata: Metadata = {
   description: "BigBoy Restaurant Website",
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const locale = await getLocale()
+
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang={locale} suppressHydrationWarning>
       <body
         className={cn(
           "min-h-screen bg-background font-sans antialiased",

@@ -1,5 +1,14 @@
 {
   "HomePage": {
     "title": "Big Boy Restaurant"
+  },
+  "Login": {
+    "title": "Login",
+    "description": "Enter your email and password to log in to the system"
+  },
+  "SwitchLanguage": {
+    "language": "Change Language",
+    "vi": "Vietnamese",
+    "en": "English"
   }
 }

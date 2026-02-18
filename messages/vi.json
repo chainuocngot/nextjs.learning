@@ -1,5 +1,14 @@
 {
   "HomePage": {
     "title": "Nhà hàng Big Boy"
+  },
+  "Login": {
+    "title": "Đăng nhập",
+    "description": "Nhập email và mật khẩu của bạn để đăng nhập vào hệ thống"
+  },
+  "SwitchLanguage": {
+    "language": "Thay đổi ngôn ngữ",
+    "vi": "Tiếng Việt",
+    "en": "Tiếng Anh"
   }
 }
