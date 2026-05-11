@@ -28,7 +28,7 @@ export default function LocaleSwitcher({ changeLocaleAction }: Props) {
       <SelectContent className="z-100">
         {["en", "vi"].map((cur) => (
           <SelectItem key={cur} value={cur}>
-            {t(cur)}
+            {t(cur as Locale)}
           </SelectItem>
         ))}
       </SelectContent>
