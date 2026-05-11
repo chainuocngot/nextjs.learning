@@ -25,18 +25,13 @@ export function proxy(request: NextRequest) {
     const url = new URL("/login", request.url)
     url.searchParams.set("clearTokens", "true")
 
-    response.headers.set("x-middleware-rewrite", url.toString())
-    return response
+    return Response.redirect(url.toString())
   }
 
   if (refreshToken) {
     // Đăng nhập rồi thì sẽ không cho vào login page
     if (unAuthPaths.some((path) => pathname.startsWith(path))) {
-      response.headers.set(
-        "x-middleware-rewrite",
-        new URL("/", request.url).toString(),
-      )
-      return response
+      return Response.redirect(new URL("/", request.url).toString())
     }
 
     // Đăng nhập rồi nhưng access token hết hạn thì redirect sang refresh token
@@ -48,8 +43,7 @@ export function proxy(request: NextRequest) {
       url.searchParams.set("refreshToken", refreshToken)
       url.searchParams.set("redirect", pathname)
 
-      response.headers.set("x-middleware-rewrite", url.toString())
-      return response
+      return Response.redirect(url.toString())
     }
 
     // Vào không đúng role thì redirect về trang chủ
@@ -64,25 +58,13 @@ export function proxy(request: NextRequest) {
       role !== Role.Owner &&
       onlyOwnerPaths.some((path) => pathname.startsWith(path))
     ) {
-      response.headers.set(
-        "x-middleware-rewrite",
-        new URL("/", request.url).toString(),
-      )
-      return response
+      return Response.redirect(new URL("/", request.url).toString())
     }
     if (role === Role.Guest && isTryingToAccessManagePath) {
-      response.headers.set(
-        "x-middleware-rewrite",
-        new URL("/", request.url).toString(),
-      )
-      return response
+      return Response.redirect(new URL("/", request.url).toString())
     }
     if (role !== Role.Guest && isTryingToAccessGuestPath) {
-      response.headers.set(
-        "x-middleware-rewrite",
-        new URL("/", request.url).toString(),
-      )
-      return response
+      return Response.redirect(new URL("/", request.url).toString())
     }
   }
 
