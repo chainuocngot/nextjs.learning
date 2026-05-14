@@ -17,10 +17,11 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useLoginMutation } from "@/queries/useAuth"
 import { toast } from "sonner"
 import { generateSocketInstance, handleErrorApi } from "@/lib/utils"
-import { useRouter, useSearchParams } from "next/navigation"
+import { useSearchParams } from "next/navigation"
 import { useEffect } from "react"
 import { useAppStore } from "@/components/app-provider"
 import { useTranslations } from "next-intl"
+import { useRouter } from "@/i18n/navigation"
 
 export default function LoginForm() {
   const t = useTranslations("Login")

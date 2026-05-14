@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/sheet"
 import { cn } from "@/lib/utils"
 import { Package2, PanelLeft } from "lucide-react"
-import Link from "next/link"
+import { Link } from "@/i18n/navigation"
 import { usePathname } from "next/navigation"
 
 export default function MobileNavLinks() {

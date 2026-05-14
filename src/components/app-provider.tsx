@@ -83,8 +83,6 @@ export default function AppProvider({ children }: PropsWithChildren) {
     <QueryClientProvider client={queryClient}>
       {children}
       <ReactQueryDevtools />
-      <RefreshToken />
-      <ListenLogoutSocket />
     </QueryClientProvider>
   )
 }

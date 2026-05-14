@@ -11,12 +11,13 @@ import {
   GuestLoginBody,
   GuestLoginBodyType,
 } from "@/schemaValidations/guest.schema"
-import { useParams, useRouter, useSearchParams } from "next/navigation"
+import { useParams, useSearchParams } from "next/navigation"
 import { useEffect } from "react"
 import { useGuestLoginMutation } from "@/queries/useGuest"
 import { toast } from "sonner"
 import { generateSocketInstance, handleErrorApi } from "@/lib/utils"
 import { useAppStore } from "@/components/app-provider"
+import { useRouter } from "@/i18n/navigation"
 
 export default function GuestLoginForm() {
   const setRole = useAppStore((state) => state.setRole)

@@ -8,9 +8,9 @@ import Quantity from "@/app/[locale]/guest/menu/quantity"
 import { useState } from "react"
 import { GuestCreateOrdersBodyType } from "@/schemaValidations/guest.schema"
 import { useGuestCreateOrderMutation } from "@/queries/useGuest"
-import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { DishStatus } from "@/constants/type"
+import { useRouter } from "@/i18n/navigation"
 
 export default function MenuOrder() {
   const router = useRouter()

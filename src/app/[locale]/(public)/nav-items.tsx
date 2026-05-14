@@ -2,11 +2,10 @@
 
 import { useAppStore } from "@/components/app-provider"
 import { Role } from "@/constants/type"
+import { Link, useRouter } from "@/i18n/navigation"
 import { cn, handleErrorApi } from "@/lib/utils"
 import { useLogoutMutation } from "@/queries/useAuth"
 import { RoleType } from "@/types/jwt.types"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 
 const menuItems: {

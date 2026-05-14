@@ -8,6 +8,8 @@ import { Toaster } from "sonner"
 import { hasLocale, NextIntlClientProvider } from "next-intl"
 import { routing } from "@/i18n/routing"
 import { notFound } from "next/navigation"
+import RefreshToken from "@/components/refresh-token"
+import ListenLogoutSocket from "@/components/listen-logout-socket"
 
 const fontSans = Inter({
   variable: "--font-inter",
@@ -46,7 +48,11 @@ export default async function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <NextIntlClientProvider>{children}</NextIntlClientProvider>
+            <NextIntlClientProvider>
+              {children}
+              <RefreshToken />
+              <ListenLogoutSocket />
+            </NextIntlClientProvider>
             <Toaster />
           </ThemeProvider>
         </AppProvider>

@@ -1,13 +1,14 @@
 "use client"
 
 import { useAppStore } from "@/components/app-provider"
+import { useRouter } from "@/i18n/navigation"
 import {
   getAccessTokenFromLocalStorage,
   getRefreshTokenFromLocalStorage,
 } from "@/lib/utils"
 import { useLogoutMutation } from "@/queries/useAuth"
 import { UseMutateAsyncFunction } from "@tanstack/react-query"
-import { useRouter, useSearchParams } from "next/navigation"
+import { useSearchParams } from "next/navigation"
 import { Suspense, useEffect, useRef } from "react"
 
 function Logout() {
