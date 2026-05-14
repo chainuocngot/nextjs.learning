@@ -11,8 +11,6 @@ import {
 } from "@/components/ui/sheet"
 import { DarkModeToggle } from "@/components/dark-mode-toggle"
 import LocaleSwitcher from "@/components/local-switcher"
-import { cookies } from "next/headers"
-import { Locale } from "next-intl"
 import NavItems from "@/app/[locale]/(public)/nav-items"
 
 export default function Layout({
@@ -22,12 +20,6 @@ export default function Layout({
   children: React.ReactNode
   modal: React.ReactNode
 }>) {
-  async function changeLocaleAction(locale: Locale) {
-    "use server"
-    const store = await cookies()
-    store.set("locale", locale)
-  }
-
   return (
     <div className="flex min-h-screen w-full flex-col relative">
       <header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6 z-100">
@@ -71,7 +63,7 @@ export default function Layout({
           </SheetContent>
         </Sheet>
         <div className="ml-auto flex items-center gap-2">
-          <LocaleSwitcher changeLocaleAction={changeLocaleAction} />
+          <LocaleSwitcher />
           <DarkModeToggle />
         </div>
       </header>

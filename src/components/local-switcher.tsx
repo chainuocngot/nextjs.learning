@@ -8,19 +8,23 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Locale, useLocale, useTranslations } from "next-intl"
+import { useParams, usePathname, useRouter } from "next/navigation"
 
-type Props = {
-  changeLocaleAction: (locale: Locale) => Promise<void>
-}
-
-export default function LocaleSwitcher({ changeLocaleAction }: Props) {
+export default function LocaleSwitcher() {
   const t = useTranslations("SwitchLanguage")
   const locale = useLocale()
+  const pathname = usePathname()
+  const params = useParams()
+  const router = useRouter()
 
   return (
     <Select
       value={locale}
-      onValueChange={(value) => changeLocaleAction(value as Locale)}
+      onValueChange={(value) => {
+        const locale = params.locale as string
+        const newPathname = pathname.replace(`/${locale}`, `/${value}`)
+        router.replace(newPathname)
+      }}
     >
       <SelectTrigger className="w-[220px]">
         <SelectValue placeholder={t("language")} />
