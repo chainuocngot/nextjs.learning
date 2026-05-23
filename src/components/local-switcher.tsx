@@ -9,8 +9,17 @@ import {
 } from "@/components/ui/select"
 import { Locale, useLocale, useTranslations } from "next-intl"
 import { useParams, usePathname, useRouter } from "next/navigation"
+import { Suspense } from "react"
 
-export default function LocaleSwitcher() {
+export default function LocaleSwitcherWrapper() {
+  return (
+    <Suspense>
+      <LocaleSwitcher />
+    </Suspense>
+  )
+}
+
+function LocaleSwitcher() {
   const t = useTranslations("SwitchLanguage")
   const locale = useLocale()
   const pathname = usePathname()

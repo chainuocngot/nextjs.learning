@@ -17,16 +17,18 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useLoginMutation } from "@/queries/useAuth"
 import { toast } from "sonner"
 import { generateSocketInstance, handleErrorApi } from "@/lib/utils"
-import { useSearchParams } from "next/navigation"
 import { useEffect } from "react"
 import { useAppStore } from "@/components/app-provider"
 import { useTranslations } from "next-intl"
 import { useRouter } from "@/i18n/navigation"
+import SearchParamsLoader, {
+  useSearchParamsLoader,
+} from "@/components/search-params-loader"
 
 export default function LoginForm() {
   const t = useTranslations("Login")
   const router = useRouter()
-  const searchParams = useSearchParams()
+  const [searchParams, setSearchParams] = useSearchParamsLoader()
   const loginMutation = useLoginMutation()
   const setRole = useAppStore((state) => state.setRole)
   const setSocket = useAppStore((state) => state.setSocket)
@@ -38,7 +40,7 @@ export default function LoginForm() {
     },
   })
 
-  const clearTokens = searchParams.get("clearTokens")
+  const clearTokens = searchParams?.get("clearTokens")
 
   useEffect(() => {
     if (clearTokens) {
@@ -65,6 +67,7 @@ export default function LoginForm() {
 
   return (
     <Card className="mx-auto w-full max-w-[424px]">
+      <SearchParamsLoader onParamsReceived={setSearchParams} />
       <CardHeader>
         <CardTitle className="text-2xl">{t("title")}</CardTitle>
         <CardDescription>{t("description")}</CardDescription>

@@ -10,6 +10,7 @@ import { routing } from "@/i18n/routing"
 import { notFound } from "next/navigation"
 import RefreshToken from "@/components/refresh-token"
 import ListenLogoutSocket from "@/components/listen-logout-socket"
+import { setRequestLocale } from "next-intl/server"
 
 const fontSans = Inter({
   variable: "--font-inter",
@@ -19,6 +20,10 @@ const fontSans = Inter({
 export const metadata: Metadata = {
   title: "BigBoy Restaurant",
   description: "BigBoy Restaurant Website",
+}
+
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }))
 }
 
 export default async function RootLayout({
@@ -32,6 +37,8 @@ export default async function RootLayout({
   if (!hasLocale(routing.locales, locale)) {
     notFound()
   }
+
+  setRequestLocale(locale)
 
   return (
     <html lang={locale} suppressHydrationWarning>

@@ -12,14 +12,22 @@ import { DarkModeToggle } from "@/components/dark-mode-toggle"
 import LocaleSwitcher from "@/components/local-switcher"
 import NavItems from "@/app/[locale]/(public)/nav-items"
 import { Link } from "@/i18n/navigation"
+import { setRequestLocale } from "next-intl/server"
+import { use } from "react"
+import { Locale } from "next-intl"
 
 export default function Layout({
   children,
   modal,
+  params,
 }: Readonly<{
   children: React.ReactNode
   modal: React.ReactNode
+  params: Promise<{ locale: string }>
 }>) {
+  const { locale } = use(params)
+  setRequestLocale(locale as Locale)
+
   return (
     <div className="flex min-h-screen w-full flex-col relative">
       <header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6 z-100">
