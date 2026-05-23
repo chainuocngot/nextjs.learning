@@ -1,6 +1,18 @@
 import dishApiRequests from "@/api-requests/dish"
 import DishDetail from "@/app/[locale]/(public)/dishes/[slug]/dish-detail"
-import { getIdFromSlugUrl, wrapServerApi } from "@/lib/utils"
+import { generateSlugUrl, getIdFromSlugUrl, wrapServerApi } from "@/lib/utils"
+
+export async function generateStaticParams() {
+  const data = await wrapServerApi(dishApiRequests.list())
+  const list = data?.payload.data ?? []
+
+  return list.map((dish) => ({
+    slug: generateSlugUrl({
+      id: dish.id,
+      name: dish.name,
+    }),
+  }))
+}
 
 export default async function DishPage({
   params,
