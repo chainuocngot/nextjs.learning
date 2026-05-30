@@ -27,6 +27,8 @@ import SearchParamsLoader, {
 
 export default function LoginForm() {
   const t = useTranslations("Login")
+  const tErrorMessage = useTranslations("ErrorMessage")
+
   const router = useRouter()
   const [searchParams, setSearchParams] = useSearchParamsLoader()
   const loginMutation = useLoginMutation()
@@ -83,7 +85,7 @@ export default function LoginForm() {
               <FormField
                 control={form.control}
                 name="email"
-                render={({ field }) => (
+                render={({ field, formState: { errors } }) => (
                   <FormItem>
                     <div className="grid gap-2">
                       <Label htmlFor="email">Email</Label>
@@ -94,7 +96,10 @@ export default function LoginForm() {
                         required
                         {...field}
                       />
-                      <FormMessage />
+                      <FormMessage>
+                        {Boolean(errors.email?.message) &&
+                          tErrorMessage(errors.email?.message as never)}
+                      </FormMessage>
                     </div>
                   </FormItem>
                 )}

@@ -10,5 +10,9 @@
     "language": "Change Language",
     "vi": "Vietnamese",
     "en": "English"
+  },
+  "ErrorMessage": {
+    "invalidEmail": "Invalid email address",
+    "required": "This field is required"
   }
 }

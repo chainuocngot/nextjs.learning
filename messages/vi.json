@@ -10,5 +10,9 @@
     "language": "Thay đổi ngôn ngữ",
     "vi": "Tiếng Việt",
     "en": "Tiếng Anh"
+  },
+  "ErrorMessage": {
+    "invalidEmail": "Địa chỉ email không hợp lệ",
+    "required": "Trường này là bắt buộc"
   }
 }
